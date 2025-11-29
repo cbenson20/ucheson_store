@@ -1,4 +1,7 @@
 class Province < ApplicationRecord
+  # Associations
+  has_many :addresses
+
   # Validations
   validates :name, presence: true, uniqueness: true
   validates :code, presence: true, uniqueness: true, length: { is: 2 }
