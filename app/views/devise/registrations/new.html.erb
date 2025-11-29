@@ -17,20 +17,20 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
           <div>
             <%= f.label :first_name, "First Name", style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
-            <%= f.text_field :first_name, autofocus: true, required: true, placeholder: "John",
+            <%= f.text_field :first_name, autofocus: true, required: true, placeholder: "Chioma",
                 style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
           </div>
 
           <div>
             <%= f.label :last_name, "Last Name", style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
-            <%= f.text_field :last_name, required: true, placeholder: "Doe",
+            <%= f.text_field :last_name, required: true, placeholder: "Benson",
                 style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
           </div>
         </div>
 
         <div style="margin-bottom: 1rem;">
           <%= f.label :username, "Username (optional)", style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
-          <%= f.text_field :username, placeholder: "johndoe",
+          <%= f.text_field :username, placeholder: "Chioma Benson",
               style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
         </div>
 
@@ -91,7 +91,7 @@
           <%= label_tag :province_id, "Province/Territory", style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
           <%= select_tag 'user[province_id]',
               options_from_collection_for_select(Province.all.order(:name), :id, :name),
-              { include_blank: "Select province..." },
+              include_blank: "Select province...",
               style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; background: white;" %>
         </div>
       </div>

@@ -3,10 +3,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # POST /users (Rubric 3.1.5 - Save address during signup)
   def create
+    # Build user without address params
     build_resource(sign_up_params)
 
     resource.save
     yield resource if block_given?
+
     if resource.persisted?
       # Create address from signup form (Rubric 3.1.5)
       if params[:user][:street_address].present?
@@ -37,16 +39,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   protected
 
-  # Permit additional parameters (Rubric 3.1.5)
+  # Permit user parameters only (NOT address params)
   def configure_sign_up_params
     devise_parameter_sanitizer.permit(:sign_up, keys: [
       :first_name,
       :last_name,
-      :username,
-      :street_address,
-      :city,
-      :postal_code,
-      :province_id
+      :username
     ])
+  end
+
+  def sign_up_params
+    params.require(:user).permit(:first_name, :last_name, :username, :email, :password, :password_confirmation)
   end
 end
