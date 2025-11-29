@@ -1,0 +1,163 @@
+<div style="margin-bottom: 1rem;">
+  <%= link_to "← Back to Products", :back, style: "color: #1e3c72; text-decoration: none; font-weight: bold;" %>
+</div>
+
+<div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 2rem;">
+
+    <!-- Product Images -->
+    <div>
+      <% if @product.images.attached? && @product.images.any? %>
+        <div style="margin-bottom: 1rem;">
+          <div id="mainImage" style="height: 400px; background: #f5f5f5; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+            <%= image_tag @product.images.first,
+                          style: "width: 100%; height: 100%; object-fit: contain;",
+                          alt: @product.name,
+                          id: "mainProductImage" %>
+          </div>
+        </div>
+
+        <% if @product.images.count > 1 %>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <% @product.images.each_with_index do |image, index| %>
+              <div style="width: 80px; height: 80px; border-radius: 5px; overflow: hidden; cursor: pointer; border: 2px solid <%= index == 0 ? '#1e3c72' : '#ddd' %>;"
+                   onclick="document.getElementById('mainProductImage').src='<%= url_for(image) %>';
+                            document.querySelectorAll('[data-thumbnail]').forEach(el => el.style.border='2px solid #ddd');
+                            this.style.border='2px solid #1e3c72';"
+                   data-thumbnail>
+                <%= image_tag image,
+                              style: "width: 100%; height: 100%; object-fit: cover;",
+                              alt: "#{@product.name} - Image #{index + 1}" %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <div style="height: 400px; background: #f5f5f5; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #999;">
+          <div style="text-align: center;">
+            <div style="font-size: 5rem;">📦</div>
+            <div>No images available</div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Product Details -->
+    <div>
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+        <% if @product.on_sale %>
+          <span style="background: #e74c3c; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: bold;">
+            🔥 ON SALE
+          </span>
+        <% end %>
+        <% if @product.new_arrival || @product.created_at > 3.days.ago %>
+          <span style="background: #27ae60; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: bold;">
+            ✨ NEW
+          </span>
+        <% end %>
+      </div>
+
+      <h1 style="font-size: 2rem; color: #2c3e50; margin-bottom: 1rem;">
+        <%= @product.name %>
+      </h1>
+
+      <div style="font-size: 2.5rem; font-weight: bold; color: #1e3c72; margin-bottom: 1.5rem;">
+        ₦<%= number_with_delimiter(@product.price.to_i) %>
+      </div>
+
+      <div style="background: #ecf0f1; padding: 1rem; border-radius: 5px; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span style="color: #7f8c8d;">Stock Status:</span>
+          <span style="font-weight: bold; color: <%= @product.stock_quantity > 0 ? '#27ae60' : '#e74c3c' %>;">
+            <% if @product.stock_quantity > 10 %>
+              ✓ In Stock (<%= @product.stock_quantity %> available)
+            <% elsif @product.stock_quantity > 0 %>
+              ⚠ Low Stock (<%= @product.stock_quantity %> left)
+            <% else %>
+              ✗ Out of Stock
+            <% end %>
+          </span>
+        </div>
+
+        <% if @product.categories.any? %>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #7f8c8d;">Categories:</span>
+            <span style="font-weight: bold;">
+              <%= @product.categories.map(&:name).join(", ") %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+
+      <div style="background: #27ae60; color: white; padding: 1rem 2rem; border-radius: 5px; text-align: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin-bottom: 1rem;"
+           onmouseover="this.style.background='#229954'"
+           onmouseout="this.style.background='#27ae60'">
+        🛒 Add to Cart (Coming Soon)
+      </div>
+
+      <div style="text-align: center; color: #7f8c8d; font-size: 0.9rem; margin-bottom: 2rem;">
+        Shopping cart functionality will be added in the next step
+      </div>
+
+      <div style="border-top: 2px solid #ecf0f1; padding-top: 1.5rem;">
+        <h3 style="font-size: 1.2rem; color: #2c3e50; margin-bottom: 1rem;">Product Description</h3>
+        <p style="color: #7f8c8d; line-height: 1.8; white-space: pre-line;">
+          <%= @product.description %>
+        </p>
+      </div>
+
+      <div style="border-top: 2px solid #ecf0f1; margin-top: 1.5rem; padding-top: 1.5rem;">
+        <h3 style="font-size: 1.2rem; color: #2c3e50; margin-bottom: 1rem;">Product Details</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <div style="color: #7f8c8d; font-size: 0.9rem;">Product ID</div>
+            <div style="font-weight: bold;">#<%= @product.id %></div>
+          </div>
+          <div>
+            <div style="color: #7f8c8d; font-size: 0.9rem;">Added</div>
+            <div style="font-weight: bold;"><%= @product.created_at.strftime("%B %d, %Y") %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Related Products from Same Category -->
+<% if @product.categories.any? %>
+  <% related_products = @product.categories.first.products.where.not(id: @product.id).limit(4) %>
+  <% if related_products.any? %>
+    <div style="margin-top: 3rem;">
+      <h2 style="font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; text-align: center;">
+        Related Products
+      </h2>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem;">
+        <% related_products.each do |product| %>
+          <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <%= link_to product_path(product), style: "text-decoration: none; color: inherit; display: block;" do %>
+              <div style="height: 200px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                <% if product.images.attached? && product.images.first.present? %>
+                  <%= image_tag product.images.first,
+                                style: "width: 100%; height: 100%; object-fit: cover;",
+                                alt: product.name %>
+                <% else %>
+                  <div style="color: #999;">📦</div>
+                <% end %>
+              </div>
+
+              <div style="padding: 1rem;">
+                <h3 style="font-size: 1rem; margin-bottom: 0.5rem; color: #2c3e50;">
+                  <%= truncate(product.name, length: 40) %>
+                </h3>
+                <div style="font-size: 1.2rem; font-weight: bold; color: #1e3c72;">
+                  ₦<%= number_with_delimiter(product.price.to_i) %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

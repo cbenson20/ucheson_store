@@ -1,0 +1,112 @@
+<div style="text-align: center; margin-bottom: 2rem;">
+  <h1 style="font-size: 2.5rem; color: #1e3c72; margin-bottom: 0.5rem;">
+    <% if params[:category_id].present? && @category %>
+      <%= @category.name %>
+    <% else %>
+      Our Products
+    <% end %>
+  </h1>
+  <p style="font-size: 1.1rem; color: #666;">
+    <% if params[:category_id].present? && @category %>
+      <%= @category.description %>
+    <% else %>
+      Browse our extensive collection of quality Nigerian building materials
+    <% end %>
+  </p>
+  <p style="margin-top: 1rem; color: #888;">
+    <strong><%= @products.count %></strong> products available
+  </p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
+  <% @products.each do |product| %>
+    <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; position: relative;"
+         onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.15)'"
+         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'">
+
+      <%= link_to product_path(product), style: "text-decoration: none; color: inherit; display: block;" do %>
+        <div style="height: 250px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+          <% if product.images.attached? && product.images.first.present? %>
+            <%= image_tag product.images.first,
+                          style: "width: 100%; height: 100%; object-fit: cover;",
+                          alt: product.name %>
+          <% else %>
+            <div style="color: #999; text-align: center; padding: 2rem;">
+              <div style="font-size: 3rem;">📦</div>
+              <div>No image</div>
+            </div>
+          <% end %>
+        </div>
+
+        <div style="padding: 1.5rem;">
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+            <% if product.on_sale %>
+              <span style="background: #e74c3c; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold;">
+                ON SALE
+              </span>
+            <% end %>
+            <% if product.new_arrival || product.created_at > 3.days.ago %>
+              <span style="background: #27ae60; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold;">
+                NEW
+              </span>
+            <% end %>
+            <% if product.stock_quantity <= 5 && product.stock_quantity > 0 %>
+              <span style="background: #f39c12; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold;">
+                LOW STOCK
+              </span>
+            <% elsif product.stock_quantity == 0 %>
+              <span style="background: #95a5a6; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold;">
+                OUT OF STOCK
+              </span>
+            <% end %>
+          </div>
+
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #2c3e50; min-height: 2.5rem;">
+            <%= product.name %>
+          </h3>
+
+          <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+            <%= truncate(product.description, length: 80) %>
+          </p>
+
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 1.5rem; font-weight: bold; color: #1e3c72;">
+                ₦<%= number_with_delimiter(product.price.to_i) %>
+              </div>
+              <div style="font-size: 0.8rem; color: #95a5a6;">
+                Stock: <%= product.stock_quantity %>
+              </div>
+            </div>
+
+            <div style="background: #1e3c72; color: white; padding: 0.75rem 1.5rem; border-radius: 5px; font-weight: bold;">
+              View Details
+            </div>
+          </div>
+
+          <% if product.categories.any? %>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ecf0f1;">
+              <div style="font-size: 0.8rem; color: #7f8c8d;">
+                Categories: <%= product.categories.map(&:name).join(", ") %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<% if @products.empty? %>
+  <div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 10px; margin-top: 2rem;">
+    <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
+    <h2 style="color: #7f8c8d; margin-bottom: 1rem;">No products found</h2>
+    <p style="color: #95a5a6;">
+      <% if params[:category_id].present? %>
+        No products in this category yet. <%= link_to "View all products", products_path, style: "color: #1e3c72;" %>
+      <% else %>
+        Check back soon for our product listings.
+      <% end %>
+    </p>
+  </div>
+<% end %>
