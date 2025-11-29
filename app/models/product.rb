@@ -3,6 +3,9 @@ class Product < ApplicationRecord
   has_many :product_categories, dependent: :destroy
   has_many :categories, through: :product_categories
 
+  # Active Storage attachments
+  has_many_attached :images
+
   # Validations
   validates :name, presence: true
   validates :description, presence: true
