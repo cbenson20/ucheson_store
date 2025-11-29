@@ -7,17 +7,20 @@ Rails.application.routes.draw do
 
   resources :products, only: [:index, :show] do
     collection do
-      get :category # For browsing by category
+      get :category
     end
   end
 
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  # Shopping cart routes (Rubric 3.1.1, 3.1.2)
+  resource :cart, only: [:show], controller: 'cart' do
+    post :add, on: :collection
+    delete :remove, on: :member
+    patch :update_quantity, on: :member
+    delete :clear, on: :collection
+  end
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  # Health and PWA routes
   get "up" => "rails/health#show", as: :rails_health_check
-
-  # Render dynamic PWA files from app/views/pwa/*
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 end
