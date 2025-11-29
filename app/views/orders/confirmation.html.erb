@@ -1,0 +1,156 @@
+<div style="max-width: 800px; margin: 0 auto;">
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <div style="font-size: 5rem; margin-bottom: 1rem;">✅</div>
+    <h1 style="font-size: 2.5rem; color: #27ae60; margin-bottom: 0.5rem;">
+      Order Confirmed!
+    </h1>
+    <p style="font-size: 1.2rem; color: #7f8c8d;">
+      Thank you for your order. We'll send you a confirmation email shortly.
+    </p>
+  </div>
+
+  <div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #ecf0f1;">
+      <div>
+        <h2 style="font-size: 1.5rem; color: #2c3e50; margin-bottom: 0.5rem;">
+          Order #<%= @order.id %>
+        </h2>
+        <div style="color: #7f8c8d; font-size: 0.9rem;">
+          Placed on <%= @order.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+        </div>
+      </div>
+      <div style="background: #fff3cd; color: #856404; padding: 0.75rem 1.5rem; border-radius: 25px; font-weight: bold; border: 2px solid #ffc107;">
+        <%= @order.status.upcase %>
+      </div>
+    </div>
+
+    <!-- Customer Information -->
+    <div style="margin-bottom: 2rem;">
+      <h3 style="font-size: 1.2rem; color: #34495e; margin-bottom: 1rem; border-bottom: 1px solid #ecf0f1; padding-bottom: 0.5rem;">
+        📧 Customer Information
+      </h3>
+      <div style="color: #2c3e50;">
+        <strong><%= @order.user.first_name %> <%= @order.user.last_name %></strong><br>
+        <%= @order.user.email %>
+      </div>
+    </div>
+
+    <!-- Shipping Address -->
+    <div style="margin-bottom: 2rem;">
+      <h3 style="font-size: 1.2rem; color: #34495e; margin-bottom: 1rem; border-bottom: 1px solid #ecf0f1; padding-bottom: 0.5rem;">
+        📦 Shipping Address
+      </h3>
+      <div style="color: #2c3e50; line-height: 1.6;">
+        <%= @order.address.street_address %><br>
+        <%= @order.address.city %>, <%= @province.name %><br>
+        <%= @order.address.postal_code %>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div style="margin-bottom: 2rem;">
+      <h3 style="font-size: 1.2rem; color: #34495e; margin-bottom: 1rem; border-bottom: 1px solid #ecf0f1; padding-bottom: 0.5rem;">
+        🛍️ Order Items
+      </h3>
+
+      <% @order.order_items.each do |item| %>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #ecf0f1;">
+          <div style="flex: 1;">
+            <div style="font-weight: bold; color: #2c3e50; margin-bottom: 0.25rem;">
+              <%= item.product.name %>
+            </div>
+            <div style="color: #7f8c8d; font-size: 0.9rem;">
+              Quantity: <%= item.quantity %> × ₦<%= number_with_delimiter(item.price_at_purchase.to_i) %>
+            </div>
+            <div style="color: #95a5a6; font-size: 0.85rem; margin-top: 0.25rem;">
+              <em>Price locked at time of purchase (Rubric 3.3.2)</em>
+            </div>
+          </div>
+          <div style="font-weight: bold; color: #1e3c72; font-size: 1.1rem;">
+            ₦<%= number_with_delimiter((item.price_at_purchase * item.quantity).to_i) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Tax Breakdown (Rubric 3.1.3) -->
+    <div style="margin-bottom: 2rem; background: #e8f5e9; border-left: 4px solid #27ae60; padding: 1rem; border-radius: 3px;">
+      <h3 style="font-size: 1.2rem; color: #34495e; margin-bottom: 1rem;">
+        💰 Tax Breakdown for <%= @province.name %>
+      </h3>
+
+      <div style="color: #2c3e50; line-height: 1.8;">
+        <% if @province.hst_rate && @province.hst_rate > 0 %>
+          <div style="display: flex; justify-content: space-between;">
+            <span>HST (<%= number_to_percentage(@province.hst_rate * 100, precision: 2) %>):</span>
+            <span style="font-weight: bold;">₦<%= number_with_delimiter((@order.subtotal * @province.hst_rate).to_i) %></span>
+          </div>
+        <% else %>
+          <% if @province.gst_rate && @province.gst_rate > 0 %>
+            <div style="display: flex; justify-content: space-between;">
+              <span>GST (<%= number_to_percentage(@province.gst_rate * 100, precision: 2) %>):</span>
+              <span style="font-weight: bold;">₦<%= number_with_delimiter((@order.subtotal * @province.gst_rate).to_i) %></span>
+            </div>
+          <% end %>
+          <% if @province.pst_rate && @province.pst_rate > 0 %>
+            <div style="display: flex; justify-content: space-between;">
+              <span>PST (<%= number_to_percentage(@province.pst_rate * 100, precision: 2) %>):</span>
+              <span style="font-weight: bold;">₦<%= number_with_delimiter((@order.subtotal * @province.pst_rate).to_i) %></span>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #a5d6a7;">
+          <span>Total Tax Rate:</span>
+          <span style="font-weight: bold;"><%= number_to_percentage(@province.total_tax_rate * 100, precision: 2) %></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Totals -->
+    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; color: #7f8c8d;">
+        <span style="font-size: 1.1rem;">Subtotal:</span>
+        <span style="font-size: 1.1rem; font-weight: bold;">₦<%= number_with_delimiter(@order.subtotal.to_i) %></span>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; color: #7f8c8d;">
+        <span style="font-size: 1.1rem;">Tax:</span>
+        <span style="font-size: 1.1rem; font-weight: bold;">₦<%= number_with_delimiter(@order.tax_amount.to_i) %></span>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; padding-top: 1rem; border-top: 2px solid #dee2e6;">
+        <span style="font-size: 1.5rem; font-weight: bold; color: #2c3e50;">Total:</span>
+        <span style="font-size: 1.8rem; font-weight: bold; color: #27ae60;">₦<%= number_with_delimiter(@order.total.to_i) %></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
+    <%= link_to "Continue Shopping", products_path,
+        style: "background: #1e3c72; color: white; padding: 1rem 2rem; border-radius: 5px; text-decoration: none; font-weight: bold; text-align: center;" %>
+
+    <button onclick="window.print()"
+            style="background: #95a5a6; color: white; padding: 1rem 2rem; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+      🖨️ Print Order
+    </button>
+  </div>
+
+  <!-- Next Steps -->
+  <div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <h3 style="font-size: 1.3rem; color: #2c3e50; margin-bottom: 1rem;">
+      📌 What's Next?
+    </h3>
+    <ol style="color: #7f8c8d; line-height: 2; padding-left: 1.5rem;">
+      <li>You'll receive an order confirmation email at <strong><%= @order.user.email %></strong></li>
+      <li>We'll process your order and update the status</li>
+      <li>You'll receive shipping updates as your order moves</li>
+      <li>Your order will arrive within 5-7 business days</li>
+    </ol>
+
+    <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 1rem; margin-top: 1.5rem; border-radius: 3px;">
+      <strong>💡 Pro Tip:</strong> Save this page or take a screenshot for your records. You can also access your order history in your account dashboard (coming soon).
+    </div>
+  </div>
+</div>

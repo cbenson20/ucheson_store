@@ -1,26 +1,27 @@
 class User < ApplicationRecord
-  # Associations
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+
   has_many :addresses, dependent: :destroy
   has_many :orders, dependent: :destroy
-  has_one :cart, dependent: :destroy
 
-  # Validations
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :username, presence: true, uniqueness: true
   validates :first_name, presence: true
   validates :last_name, presence: true
 
-  # Helper method for full name
-  def full_name
-    "#{first_name} #{last_name}"
-  end
-
-  # Ransack configuration
+  # Ransackable attributes for ActiveAdmin
   def self.ransackable_attributes(auth_object = nil)
     ["created_at", "email", "first_name", "id", "last_name", "updated_at", "username"]
   end
 
   def self.ransackable_associations(auth_object = nil)
-    ["addresses", "cart", "orders"]
+    ["addresses", "orders"]
+  end
+
+  # Full name helper
+  def full_name
+    "#{first_name} #{last_name}"
   end
 end

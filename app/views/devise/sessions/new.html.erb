@@ -1,0 +1,43 @@
+<div style="max-width: 500px; margin: 2rem auto;">
+  <div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <h2 style="font-size: 2rem; color: #1e3c72; margin-bottom: 0.5rem; text-align: center;">
+      Welcome Back!
+    </h2>
+    <p style="text-align: center; color: #7f8c8d; margin-bottom: 2rem;">
+      Sign in to your account
+    </p>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div style="margin-bottom: 1rem;">
+        <%= f.label :email, style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", required: true,
+            placeholder: "your.email@example.com",
+            style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <%= f.label :password, style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
+        <%= f.password_field :password, autocomplete: "current-password", required: true,
+            style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
+      </div>
+
+      <% if devise_mapping.rememberable? %>
+        <div style="margin-bottom: 1.5rem;">
+          <%= f.check_box :remember_me, style: "margin-right: 0.5rem;" %>
+          <%= f.label :remember_me, "Remember me", style: "color: #7f8c8d;" %>
+        </div>
+      <% end %>
+
+      <div style="margin-bottom: 1rem;">
+        <%= f.submit "Log in",
+            style: "width: 100%; background: #1e3c72; color: white; padding: 1rem; border: none; border-radius: 5px; font-size: 1.2rem; font-weight: bold; cursor: pointer;",
+            onmouseover: "this.style.background='#2a5298'",
+            onmouseout: "this.style.background='#1e3c72'" %>
+      </div>
+    <% end %>
+
+    <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #ecf0f1;">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>

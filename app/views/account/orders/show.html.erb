@@ -1,0 +1,93 @@
+<div style="max-width: 900px; margin: 0 auto;">
+  <%= link_to "← Back to Orders", account_orders_path,
+      style: "color: #3498db; text-decoration: none; font-weight: bold; margin-bottom: 1rem; display: inline-block;" %>
+
+  <div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #ecf0f1;">
+      <div>
+        <h1 style="font-size: 2rem; color: #2c3e50; margin-bottom: 0.5rem;">
+          Order #<%= @order.id %>
+        </h1>
+        <div style="color: #7f8c8d;">
+          Placed on <%= @order.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+        </div>
+      </div>
+
+      <% status_colors = {
+        'pending' => '#f39c12',
+        'paid' => '#3498db',
+        'shipped' => '#9b59b6',
+        'delivered' => '#27ae60',
+        'cancelled' => '#e74c3c'
+      } %>
+      <div style="background: <%= status_colors[@order.status] || '#95a5a6' %>; color: white; padding: 0.75rem 1.5rem; border-radius: 25px; font-weight: bold; text-transform: uppercase;">
+        <%= @order.status %>
+      </div>
+    </div>
+
+    <!-- Shipping Address -->
+    <div style="margin-bottom: 2rem;">
+      <h3 style="font-size: 1.2rem; color: #34495e; margin-bottom: 1rem;">
+        📦 Shipping Address
+      </h3>
+      <div style="color: #2c3e50; line-height: 1.6;">
+        <strong><%= @order.user.full_name %></strong><br>
+        <%= @order.address.street_address %><br>
+        <%= @order.address.city %>, <%= @province.name %><br>
+        <%= @order.address.postal_code %>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div style="margin-bottom: 2rem;">
+      <h3 style="font-size: 1.2rem; color: #34495e; margin-bottom: 1rem;">
+        🛍️ Order Items
+      </h3>
+
+      <% @order.order_items.each do |item| %>
+        <div style="display: flex; gap: 1.5rem; padding: 1rem 0; border-bottom: 1px solid #ecf0f1;">
+          <div style="width: 80px; height: 80px; background: #f5f5f5; border-radius: 5px; overflow: hidden; flex-shrink: 0;">
+            <% if item.product.images.attached? && item.product.images.first.present? %>
+              <%= image_tag item.product.images.first, style: "width: 100%; height: 100%; object-fit: cover;" %>
+            <% else %>
+              <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999; font-size: 2rem;">
+                📦
+              </div>
+            <% end %>
+          </div>
+
+          <div style="flex: 1;">
+            <div style="font-weight: bold; color: #2c3e50; margin-bottom: 0.25rem;">
+              <%= item.product.name %>
+            </div>
+            <div style="color: #7f8c8d; font-size: 0.9rem;">
+              Quantity: <%= item.quantity %> × ₦<%= number_with_delimiter(item.price_at_purchase.to_i) %>
+            </div>
+          </div>
+
+          <div style="text-align: right; font-weight: bold; color: #1e3c72;">
+            ₦<%= number_with_delimiter((item.price_at_purchase * item.quantity).to_i) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Order Totals -->
+    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #7f8c8d;">
+        <span>Subtotal:</span>
+        <span>₦<%= number_with_delimiter(@order.subtotal.to_i) %></span>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #7f8c8d;">
+        <span>Tax (<%= @province.name %>):</span>
+        <span>₦<%= number_with_delimiter(@order.tax_amount.to_i) %></span>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; padding-top: 1rem; border-top: 2px solid #dee2e6; font-size: 1.3rem; font-weight: bold; color: #2c3e50;">
+        <span>Total:</span>
+        <span style="color: #27ae60;">₦<%= number_with_delimiter(@order.total.to_i) %></span>
+      </div>
+    </div>
+  </div>
+</div>

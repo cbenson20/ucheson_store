@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
+  # Admin authentication and panel
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
+
+  # Customer authentication (Rubric 3.1.4)
+  devise_for :users, controllers: {
+    registrations: 'users/registrations'
+  }
 
   # Public product pages
   root 'products#index'
@@ -17,6 +23,27 @@ Rails.application.routes.draw do
     delete :remove, on: :member
     patch :update_quantity, on: :member
     delete :clear, on: :collection
+  end
+
+  # Checkout and orders (Rubric 3.1.3, 3.3.2)
+  resources :orders, only: [:new, :create, :index] do
+    get :confirmation, on: :member
+  end
+
+  # User account pages (Rubric 3.2.1)
+  namespace :account do
+    get "addresses/index"
+    get "addresses/new"
+    get "addresses/edit"
+    get "addresses/create"
+    get "addresses/update"
+    get "addresses/destroy"
+    get "orders/index"
+    get "orders/show"
+    get "dashboard/index"
+    root 'dashboard#index'
+    resources :orders, only: [:index, :show]
+    resources :addresses
   end
 
   # Health and PWA routes

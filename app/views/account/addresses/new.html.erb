@@ -1,0 +1,60 @@
+<div style="max-width: 600px; margin: 0 auto;">
+  <h1 style="font-size: 2.5rem; color: #1e3c72; margin-bottom: 2rem;">
+    Add New Address
+  </h1>
+
+  <div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <%= form_with model: @address, url: account_addresses_path, local: true do |f| %>
+
+      <% if @address.errors.any? %>
+        <div style="background: #ffe6e6; border-left: 4px solid #e74c3c; padding: 1rem; margin-bottom: 1.5rem; border-radius: 3px;">
+          <strong><%= pluralize(@address.errors.count, "error") %> prohibited this address from being saved:</strong>
+          <ul style="margin: 0.5rem 0 0 1.5rem;">
+            <% @address.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div style="margin-bottom: 1rem;">
+        <%= f.label :street_address, "Street Address", style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
+        <%= f.text_field :street_address, required: true, placeholder: "123 Main Street, Apt 4B",
+            style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <%= f.label :city, style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
+          <%= f.text_field :city, required: true, placeholder: "Toronto",
+              style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
+        </div>
+
+        <div>
+          <%= f.label :postal_code, style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
+          <%= f.text_field :postal_code, required: true, placeholder: "M5V 3A8",
+              style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1rem;">
+        <%= f.label :province_id, "Province/Territory", style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
+        <%= f.collection_select :province_id, @provinces, :id, :name, {},
+            style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; background: white;" %>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <%= f.label :address_type, style: "display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;" %>
+        <%= f.select :address_type, [['Shipping', 'shipping'], ['Billing', 'billing']], {},
+            style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; background: white;" %>
+      </div>
+
+      <div style="display: flex; gap: 1rem;">
+        <%= f.submit "Save Address",
+            style: "flex: 1; background: #27ae60; color: white; padding: 1rem; border: none; border-radius: 5px; font-size: 1.1rem; font-weight: bold; cursor: pointer;" %>
+        <%= link_to "Cancel", account_addresses_path,
+            style: "flex: 1; background: #95a5a6; color: white; padding: 1rem; border-radius: 5px; text-decoration: none; font-weight: bold; text-align: center; display: block; line-height: 1.5;" %>
+      </div>
+    <% end %>
+  </div>
+</div>

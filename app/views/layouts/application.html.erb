@@ -88,6 +88,19 @@
         background: rgba(255,255,255,0.3);
       }
 
+      .btn-signup {
+        background: #27ae60;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+
+      .btn-signup:hover {
+        background: #229954;
+      }
+
       .categories-bar {
         background: white;
         border-bottom: 1px solid #e0e0e0;
@@ -169,6 +182,7 @@
 
           <nav class="nav">
             <%= link_to "Home", root_path %>
+
             <%= link_to cart_path, style: "position: relative;" do %>
               <span>🛒 Cart</span>
               <% if cart_item_count > 0 %>
@@ -177,7 +191,16 @@
                 </span>
               <% end %>
             <% end %>
-            <%= link_to "Admin Dashboard", admin_root_path, class: "btn-admin" %>
+
+            <% if user_signed_in? %>
+              <%= link_to "My Account", account_root_path %>
+              <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete } %>
+            <% else %>
+              <%= link_to "Login", new_user_session_path %>
+              <%= link_to "Sign Up", new_user_registration_path, class: "btn-signup" %>
+            <% end %>
+
+            <%= link_to "Admin", admin_root_path, class: "btn-admin" %>
           </nav>
         </div>
       </div>

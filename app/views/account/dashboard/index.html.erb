@@ -1,0 +1,96 @@
+<div style="max-width: 1200px; margin: 0 auto;">
+  <h1 style="font-size: 2.5rem; color: #1e3c72; margin-bottom: 0.5rem;">
+    Welcome back, <%= current_user.first_name %>!
+  </h1>
+  <p style="color: #7f8c8d; margin-bottom: 2rem; font-size: 1.1rem;">
+    Manage your orders, addresses, and account settings
+  </p>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+
+    <!-- Orders Card -->
+    <%= link_to account_orders_path, style: "text-decoration: none; color: inherit;" do %>
+      <div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;"
+           onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.15)'"
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+        <h3 style="font-size: 1.5rem; color: #2c3e50; margin-bottom: 0.5rem;">My Orders</h3>
+        <p style="color: #7f8c8d; margin-bottom: 1rem;">
+          View and track your orders
+        </p>
+        <div style="color: #3498db; font-weight: bold;">
+          <%= pluralize(current_user.orders.count, 'order') %> →
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Addresses Card -->
+    <%= link_to account_addresses_path, style: "text-decoration: none; color: inherit;" do %>
+      <div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;"
+           onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.15)'"
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📍</div>
+        <h3 style="font-size: 1.5rem; color: #2c3e50; margin-bottom: 0.5rem;">Addresses</h3>
+        <p style="color: #7f8c8d; margin-bottom: 1rem;">
+          Manage shipping addresses
+        </p>
+        <div style="color: #3498db; font-weight: bold;">
+          <%= pluralize(@addresses.count, 'address', 'addresses') %> →
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Account Settings Card -->
+    <%= link_to edit_user_registration_path, style: "text-decoration: none; color: inherit;" do %>
+      <div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;"
+           onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.15)'"
+           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">⚙️</div>
+        <h3 style="font-size: 1.5rem; color: #2c3e50; margin-bottom: 0.5rem;">Account Settings</h3>
+        <p style="color: #7f8c8d; margin-bottom: 1rem;">
+          Update your profile and password
+        </p>
+        <div style="color: #3498db; font-weight: bold;">
+          Edit profile →
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Recent Orders -->
+  <% if @recent_orders.any? %>
+    <h2 style="font-size: 2rem; color: #2c3e50; margin-bottom: 1.5rem;">
+      Recent Orders
+    </h2>
+
+    <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+      <% @recent_orders.each do |order| %>
+        <div style="padding: 1.5rem; border-bottom: 1px solid #ecf0f1;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: bold; color: #2c3e50; margin-bottom: 0.25rem;">
+                Order #<%= order.id %>
+              </div>
+              <div style="color: #7f8c8d; font-size: 0.9rem;">
+                <%= order.created_at.strftime("%B %d, %Y") %> • <%= pluralize(order.order_items.sum(:quantity), 'item') %>
+              </div>
+            </div>
+
+            <div style="text-align: right;">
+              <div style="font-size: 1.3rem; font-weight: bold; color: #1e3c72; margin-bottom: 0.25rem;">
+                ₦<%= number_with_delimiter(order.total.to_i) %>
+              </div>
+              <%= link_to "View →", account_order_path(order),
+                  style: "color: #3498db; text-decoration: none; font-weight: bold; font-size: 0.9rem;" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div style="padding: 1rem; text-align: center; background: #f8f9fa;">
+        <%= link_to "View all orders →", account_orders_path,
+            style: "color: #3498db; text-decoration: none; font-weight: bold;" %>
+      </div>
+    </div>
+  <% end %>
+</div>

@@ -125,11 +125,12 @@
       </div>
 
       <div style="margin-top: 2rem;">
-        <div style="background: #27ae60; color: white; padding: 1rem; border-radius: 5px; text-align: center; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-bottom: 1rem;"
-             onmouseover="this.style.background='#229954'"
-             onmouseout="this.style.background='#27ae60'">
-          Proceed to Checkout (Coming Soon)
-        </div>
+        <%= link_to new_order_path,
+            style: "background: #27ae60; color: white; padding: 1rem; border-radius: 5px; text-align: center; font-size: 1.1rem; font-weight: bold; display: block; text-decoration: none; margin-bottom: 1rem;",
+            onmouseover: "this.style.background='#229954'",
+            onmouseout: "this.style.background='#27ae60'" do %>
+          🛍️ Proceed to Checkout
+        <% end %>
 
         <%= link_to "← Continue Shopping", products_path,
                     style: "display: block; text-align: center; color: #1e3c72; text-decoration: none; font-weight: bold;" %>
