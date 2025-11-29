@@ -11,4 +11,13 @@ class OrderItem < ApplicationRecord
   def line_total
     price_at_purchase * quantity
   end
+
+  # Ransack configuration
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "id", "order_id", "price_at_purchase", "product_id", "quantity", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["order", "product"]
+  end
 end

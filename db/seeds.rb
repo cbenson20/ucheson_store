@@ -241,4 +241,4 @@ puts "  - Categories: #{Category.count}"
 puts "  - Products: #{Product.count}"
 puts "  - Products on sale: #{Product.on_sale.count}"
 puts "  - New arrivals: #{Product.new_arrivals.count}"
-puts "="*60
+puts "="*60AdminUser.create!(email: 'admin@example.com', password: 'password', password_confirmation: 'password') if Rails.env.development?

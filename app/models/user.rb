@@ -14,4 +14,13 @@ class User < ApplicationRecord
   def full_name
     "#{first_name} #{last_name}"
   end
+
+  # Ransack configuration
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "email", "first_name", "id", "last_name", "updated_at", "username"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["addresses", "cart", "orders"]
+  end
 end

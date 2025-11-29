@@ -22,4 +22,13 @@ class Order < ApplicationRecord
     self.tax_amount = subtotal * province.total_tax_rate
     self.total = subtotal + tax_amount
   end
+
+  # Ransack configuration
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "id", "payment_id", "status", "subtotal", "tax_amount", "total", "updated_at", "user_id", "address_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["address", "order_items", "products", "user"]
+  end
 end

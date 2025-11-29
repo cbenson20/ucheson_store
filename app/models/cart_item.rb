@@ -11,4 +11,13 @@ class CartItem < ApplicationRecord
   def line_total
     product.price * quantity
   end
+
+  # Ransack configuration
+  def self.ransackable_attributes(auth_object = nil)
+    ["cart_id", "created_at", "id", "product_id", "quantity", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["cart", "product"]
+  end
 end

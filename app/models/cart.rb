@@ -13,6 +13,15 @@ class Cart < ApplicationRecord
     cart_items.sum { |item| item.product.price * item.quantity }
   end
 
+  # Ransack configuration
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "id", "session_id", "updated_at", "user_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["cart_items", "products", "user"]
+  end
+
   private
 
   def user_or_session_present
