@@ -1,178 +1,186 @@
-<h1 style="font-size: 2.5rem; color: #1e3c72; margin-bottom: 2rem; text-align: center;">
-  🛍️ Checkout
-</h1>
+<div class="container py-4">
+  <h1 class="display-5 fw-bold text-center mb-4">
+    🛍️ Checkout
+  </h1>
 
-<div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: start;">
+  <div class="row g-4">
 
-  <!-- Checkout Form -->
-  <div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-    <h2 style="font-size: 1.8rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #ecf0f1; padding-bottom: 1rem;">
-      📦 Shipping Information
-    </h2>
-
-    <%= form_with url: orders_path, method: :post, local: true do %>
-      <% if user_signed_in? %>
-        <div style="background: #e8f5e9; border-left: 4px solid #27ae60; padding: 1rem; margin-bottom: 1.5rem; border-radius: 3px;">
-          <strong>👋 Hi <%= current_user.first_name %>!</strong> Your information has been pre-filled. You can edit it if needed.
+    <!-- Checkout Form -->
+    <div class="col-lg-7">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">📦 Shipping Information</h5>
         </div>
-      <% end %>
-      <!-- Customer Information -->
-      <div style="margin-bottom: 2rem;">
-        <h3 style="font-size: 1.2rem; color: #34495e; margin-bottom: 1rem;">Contact Information</h3>
+        <div class="card-body">
 
-        <div style="margin-bottom: 1rem;">
-          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">
-            Email Address <span style="color: #e74c3c;">*</span>
-          </label>
-          <%= email_field_tag :email, user_signed_in? ? @user.email : nil,
-              required: true,
-              placeholder: "your.email@example.com",
-              readonly: user_signed_in?,
-              style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; #{user_signed_in? ? 'background: #f5f5f5;' : ''}" %>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-          <div>
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">
-              First Name <span style="color: #e74c3c;">*</span>
-            </label>
-         <%= text_field_tag :first_name, user_signed_in? ? @user.first_name : nil,                required: true,
-                placeholder: "constance",
-                style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
-          </div>
-
-          <div>
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">
-              Last Name <span style="color: #e74c3c;">*</span>
-            </label>
-             <%= text_field_tag :last_name, user_signed_in? ? @user.last_name : nil,                required: true,
-                placeholder: "Doe",
-                style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
-          </div>
-        </div>
-      </div>
-
-      <!-- Shipping Address -->
-      <div style="margin-bottom: 2rem;">
-        <h3 style="font-size: 1.2rem; color: #34495e; margin-bottom: 1rem;">Shipping Address</h3>
-
-        <div style="margin-bottom: 1rem;">
-          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">
-            Street Address <span style="color: #e74c3c;">*</span>
-          </label>
-          <%= text_field_tag :street_address, @address&.street_address,
-              required: true,
-              placeholder: "123 Main Street, Apt 4B",
-              style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-          <div>
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">
-              City <span style="color: #e74c3c;">*</span>
-            </label>
-            <%= text_field_tag :city, @address&.city,
-                required: true,
-                placeholder: "Toronto",
-                style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
-          </div>
-
-          <div>
-            <label style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">
-              Postal Code <span style="color: #e74c3c;">*</span>
-            </label>
-            <%= text_field_tag :postal_code, @address&.postal_code,
-                required: true,
-                placeholder: "M5V 3A8",
-                style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
-          </div>
-        </div>
-
-        <div>
-          <label style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">
-            Province/Territory <span style="color: #e74c3c;">*</span>
-          </label>
-          <%= select_tag :province_id,
-              options_from_collection_for_select(@provinces, :id, :name, @address&.province_id),
-              required: true,
-              id: 'province_select',
-              style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem; background: white;",
-              onchange: "updateTaxPreview()" %>
-          <div style="margin-top: 0.5rem; padding: 0.75rem; background: #e8f5e9; border-left: 4px solid #27ae60; border-radius: 3px; font-size: 0.9rem;" id="tax_preview">
-            <strong>Tax Information:</strong> Select a province to see applicable taxes
-          </div>
-        </div>
-      </div>
-
-      <!-- Submit Button -->
-      <div style="margin-top: 2rem;">
-        <%= submit_tag "Place Order",
-            style: "width: 100%; background: #27ae60; color: white; padding: 1rem; border: none; border-radius: 5px; font-size: 1.2rem; font-weight: bold; cursor: pointer;",
-            onmouseover: "this.style.background='#229954'",
-            onmouseout: "this.style.background='#27ae60'" %>
-
-        <%= link_to "← Back to Cart", cart_path,
-            style: "display: block; text-align: center; margin-top: 1rem; color: #7f8c8d; text-decoration: none; font-weight: bold;" %>
-      </div>
-    <% end %>
-  </div>
-
-  <!-- Order Summary -->
-  <div style="background: white; border-radius: 10px; padding: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 20px;">
-    <h2 style="font-size: 1.5rem; color: #2c3e50; margin-bottom: 1.5rem; border-bottom: 2px solid #ecf0f1; padding-bottom: 1rem;">
-      📋 Order Summary
-    </h2>
-
-    <!-- Cart Items -->
-    <div style="margin-bottom: 1.5rem;">
-      <% @cart_items.each do |item| %>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #ecf0f1;">
-          <div style="flex: 1;">
-            <div style="font-weight: bold; color: #2c3e50; margin-bottom: 0.25rem;">
-              <%= item[:product].name %>
+          <% if user_signed_in? %>
+            <div class="alert alert-success">
+              <i class="bi bi-person-check"></i>
+              <strong>Hi <%= current_user.first_name %>!</strong> Your information has been pre-filled.
             </div>
-            <div style="color: #7f8c8d; font-size: 0.9rem;">
-              Quantity: <%= item[:quantity] %> × ₦<%= number_with_delimiter(item[:product].price.to_i) %>
+          <% end %>
+
+          <%= form_with url: orders_path, method: :post, local: true do %>
+
+            <!-- Customer Information -->
+            <h6 class="fw-bold mb-3">Contact Information</h6>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                Email Address <span class="text-danger">*</span>
+              </label>
+              <%= email_field_tag :email, user_signed_in? ? @user.email : nil,
+                  required: true,
+                  readonly: user_signed_in?,
+                  placeholder: "your.email@example.com",
+                  class: "form-control #{user_signed_in? ? 'bg-light' : ''}" %>
             </div>
-          </div>
-          <div style="font-weight: bold; color: #1e3c72;">
-            ₦<%= number_with_delimiter(item[:line_total].to_i) %>
-          </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                  First Name <span class="text-danger">*</span>
+                </label>
+                <%= text_field_tag :first_name, user_signed_in? ? @user.first_name : nil,
+                    required: true,
+                    placeholder: "John",
+                    class: "form-control" %>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                  Last Name <span class="text-danger">*</span>
+                </label>
+                <%= text_field_tag :last_name, user_signed_in? ? @user.last_name : nil,
+                    required: true,
+                    placeholder: "Doe",
+                    class: "form-control" %>
+              </div>
+            </div>
+
+            <!-- Shipping Address -->
+            <h6 class="fw-bold mb-3 pt-3 border-top">Shipping Address</h6>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">
+                Street Address <span class="text-danger">*</span>
+              </label>
+              <%= text_field_tag :street_address, @address&.street_address,
+                  required: true,
+                  placeholder: "123 Main Street, Apt 4B",
+                  class: "form-control" %>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-8">
+                <label class="form-label fw-semibold">
+                  City <span class="text-danger">*</span>
+                </label>
+                <%= text_field_tag :city, @address&.city,
+                    required: true,
+                    placeholder: "Toronto",
+                    class: "form-control" %>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">
+                  Postal Code <span class="text-danger">*</span>
+                </label>
+                <%= text_field_tag :postal_code, @address&.postal_code,
+                    required: true,
+                    placeholder: "M5V 3A8",
+                    class: "form-control" %>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-semibold">
+                Province/Territory <span class="text-danger">*</span>
+              </label>
+              <%= select_tag :province_id,
+                  options_from_collection_for_select(@provinces, :id, :name, @address&.province_id),
+                  required: true,
+                  id: 'province_select',
+                  class: "form-select",
+                  onchange: "updateTaxPreview()" %>
+              <div id="tax_preview" class="alert alert-info mt-2 py-2">
+                <small><strong>Tax Information:</strong> Select a province to see applicable taxes</small>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <%= submit_tag "Place Order", class: "btn btn-success w-100 btn-lg" %>
+
+            <%= link_to cart_path, class: "btn btn-outline-secondary w-100 mt-2" do %>
+              <i class="bi bi-arrow-left"></i> Back to Cart
+            <% end %>
+          <% end %>
         </div>
-      <% end %>
-    </div>
-
-    <!-- Totals -->
-    <div style="border-top: 2px solid #ecf0f1; padding-top: 1rem;">
-      <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #7f8c8d;">
-        <span>Subtotal:</span>
-        <span id="subtotal">₦<%= number_with_delimiter(@cart_total.to_i) %></span>
-      </div>
-
-      <div id="tax_breakdown" style="margin-bottom: 0.5rem; color: #7f8c8d; font-size: 0.9rem; display: none;">
-        <!-- Will be populated by JavaScript -->
-      </div>
-
-      <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #7f8c8d;">
-        <span>Tax:</span>
-        <span id="tax_amount">₦0</span>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; font-size: 1.5rem; font-weight: bold; color: #1e3c72; padding-top: 1rem; border-top: 2px solid #ecf0f1;">
-        <span>Total:</span>
-        <span id="total">₦<%= number_with_delimiter(@cart_total.to_i) %></span>
       </div>
     </div>
 
-    <div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 5px; padding: 1rem; margin-top: 1.5rem; font-size: 0.85rem; color: #856404;">
-      💡 <strong>Note:</strong> Tax will be calculated based on your selected province. Review your order carefully before placing it.
+    <!-- Order Summary -->
+    <div class="col-lg-5">
+      <div class="card sticky-top" style="top: 20px;">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0">📋 Order Summary</h5>
+        </div>
+        <div class="card-body">
+
+          <!-- Cart Items -->
+          <div class="mb-3" style="max-height: 300px; overflow-y: auto;">
+            <% @cart_items.each do |item| %>
+              <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                <div class="flex-grow-1">
+                  <div class="fw-bold text-dark small">
+                    <%= item[:product].name %>
+                  </div>
+                  <div class="text-muted small">
+                    <%= item[:quantity] %> × ₦<%= number_with_delimiter(item[:product].price.to_i) %>
+                  </div>
+                </div>
+                <div class="fw-bold text-primary">
+                  ₦<%= number_with_delimiter(item[:line_total].to_i) %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <!-- Totals -->
+          <div class="border-top pt-3">
+            <div class="d-flex justify-content-between text-muted mb-2">
+              <span>Subtotal:</span>
+              <span id="subtotal">₦<%= number_with_delimiter(@cart_total.to_i) %></span>
+            </div>
+
+            <div id="tax_breakdown" class="text-muted small mb-2" style="display: none;"></div>
+
+            <div class="d-flex justify-content-between text-muted mb-3">
+              <span>Tax:</span>
+              <span id="tax_amount">₦0</span>
+            </div>
+
+            <div class="d-flex justify-content-between fs-4 fw-bold text-success pt-3 border-top">
+              <span>Total:</span>
+              <span id="total">₦<%= number_with_delimiter(@cart_total.to_i) %></span>
+            </div>
+          </div>
+
+          <div class="alert alert-warning mt-3 py-2">
+            <small>
+              <i class="bi bi-info-circle"></i>
+              Tax will be calculated based on your selected province.
+            </small>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- JavaScript for Tax Calculation Preview -->
 <script>
-  // Province tax data (Rubric 3.1.3)
+  // Province tax data
   const provinces = {
     <% @provinces.each do |province| %>
       <%= province.id %>: {
@@ -204,7 +212,7 @@
       }
 
       document.getElementById('tax_preview').innerHTML =
-        `<strong>Tax Information for ${province.name}:</strong><br>${taxBreakdown} = ${(province.total * 100).toFixed(2)}% total`;
+        `<small><strong>Tax Information for ${province.name}:</strong><br>${taxBreakdown} = ${(province.total * 100).toFixed(2)}% total</small>`;
 
       // Update order summary
       const taxAmount = subtotal * province.total;
@@ -218,13 +226,13 @@
       // Show tax breakdown
       let breakdownHTML = '';
       if (province.gst > 0) {
-        breakdownHTML += `<div style="display: flex; justify-content: space-between;"><span>GST (${(province.gst * 100).toFixed(2)}%):</span><span>₦${Math.round(subtotal * province.gst).toLocaleString()}</span></div>`;
+        breakdownHTML += `<div class="d-flex justify-content-between"><span>GST (${(province.gst * 100).toFixed(2)}%):</span><span>₦${Math.round(subtotal * province.gst).toLocaleString()}</span></div>`;
       }
       if (province.pst > 0) {
-        breakdownHTML += `<div style="display: flex; justify-content: space-between;"><span>PST (${(province.pst * 100).toFixed(2)}%):</span><span>₦${Math.round(subtotal * province.pst).toLocaleString()}</span></div>`;
+        breakdownHTML += `<div class="d-flex justify-content-between"><span>PST (${(province.pst * 100).toFixed(2)}%):</span><span>₦${Math.round(subtotal * province.pst).toLocaleString()}</span></div>`;
       }
       if (province.hst > 0) {
-        breakdownHTML += `<div style="display: flex; justify-content: space-between;"><span>HST (${(province.hst * 100).toFixed(2)}%):</span><span>₦${Math.round(subtotal * province.hst).toLocaleString()}</span></div>`;
+        breakdownHTML += `<div class="d-flex justify-content-between"><span>HST (${(province.hst * 100).toFixed(2)}%):</span><span>₦${Math.round(subtotal * province.hst).toLocaleString()}</span></div>`;
       }
 
       if (breakdownHTML) {
