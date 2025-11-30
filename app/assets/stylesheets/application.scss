@@ -28,8 +28,6 @@ body {
   color: inherit;
   display: block;
   border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  overflow: hidden;
 
   &:hover {
     transform: translateY(-4px);
@@ -37,16 +35,18 @@ body {
     text-decoration: none;
 
     .product-image {
-      transform: scale(1.05);
+      transform: scale(1.1);
     }
   }
 }
 
 .product-image {
   transition: transform 0.5s ease;
-  object-fit: cover;
-  height: 250px;
+  object-fit: contain; // Changed from 'cover' to 'contain'
+  height: 200px;
   width: 100%;
+  padding: 1rem; // Add padding around image
+  background: white;
 }
 
 // Badges
@@ -200,7 +200,7 @@ html {
 // Responsive
 @media (max-width: 768px) {
   .product-image {
-    height: 200px;
+    height: 150px;
   }
 
   .price-display {
