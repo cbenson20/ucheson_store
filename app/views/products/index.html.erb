@@ -1,239 +1,221 @@
-<div style="text-align: center; margin-bottom: 2rem;">
-  <h1 style="font-size: 2.5rem; color: #1e3c72; margin-bottom: 0.5rem;">
-    <% if params[:category_id].present? && @category %>
-      <%= @category.name %>
-    <% elsif params[:filter] == 'on_sale' %>
-      Products On Sale
-    <% elsif params[:filter] == 'new' %>
-      New Arrivals
-    <% elsif params[:filter] == 'recently_updated' %>
-      Recently Updated Products
-    <% elsif params[:search].present? %>
-      Search Results
-    <% else %>
-      Our Products
-    <% end %>
-  </h1>
-  <p style="font-size: 1.1rem; color: #666;">
-    <% if params[:category_id].present? && @category %>
-      <%= @category.description %>
-    <% elsif params[:search].present? %>
-      Showing results for "<%= params[:search] %>"
-    <% else %>
-      Browse our extensive collection of quality Nigerian building materials
-    <% end %>
-  </p>
-</div>
+<div class="container-fluid py-4">
 
-<!-- Search Bar  -->
-<div style="background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 2rem;">
-  <%= form_with url: category_products_path, method: :get, local: true, style: "display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;" do %>
-    <div style="flex: 1; min-width: 200px;">
-      <label style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">
-         Search Products
-      </label>
-      <%= text_field_tag :search, params[:search],
-          placeholder: "Search by name or description...",
-          style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
-    </div>
-
-    <div style="min-width: 200px;">
-      <label style="display: block; margin-bottom: 0.5rem; font-weight: bold; color: #2c3e50;">
-         Filter by Category
-      </label>
-      <%= select_tag :category_id,
-          options_for_select([['All Categories', '']] + @categories.map { |c| [c.name, c.id] }, params[:category_id]),
-          style: "width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 5px; font-size: 1rem;" %>
-    </div>
-
-    <%= hidden_field_tag :filter, params[:filter] %>
-
-    <div style="display: flex; gap: 0.5rem;">
-      <%= submit_tag "Search", style: "background: #1e3c72; color: white; padding: 0.75rem 2rem; border: none; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer;" %>
-
-      <% if params[:search].present? || params[:category_id].present? %>
-        <%= link_to "Clear", products_path, style: "background: #95a5a6; color: white; padding: 0.75rem 1.5rem; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block;" %>
-      <% end %>
-    </div>
-  <% end %>
-</div>
-
-<!-- Filter Buttons (Rubric 2.4) -->
-<div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
-  <%= link_to products_path(search: params[:search], category_id: params[:category_id]),
-      style: "padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: bold; transition: all 0.3s; #{params[:filter].blank? ? 'background: #1e3c72; color: white;' : 'background: #ecf0f1; color: #7f8c8d;'}" do %>
-     All Products
-  <% end %>
-
-  <%= link_to products_path(filter: 'on_sale', search: params[:search], category_id: params[:category_id]),
-      style: "padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: bold; transition: all 0.3s; #{params[:filter] == 'on_sale' ? 'background: #e74c3c; color: white;' : 'background: #ecf0f1; color: #7f8c8d;'}" do %>
-     On Sale
-  <% end %>
-
-  <%= link_to products_path(filter: 'new', search: params[:search], category_id: params[:category_id]),
-      style: "padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: bold; transition: all 0.3s; #{params[:filter] == 'new' ? 'background: #27ae60; color: white;' : 'background: #ecf0f1; color: #7f8c8d;'}" do %>
-     New Arrivals
-  <% end %>
-
-  <%= link_to products_path(filter: 'recently_updated', search: params[:search], category_id: params[:category_id]),
-      style: "padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: bold; transition: all 0.3s; #{params[:filter] == 'recently_updated' ? 'background: #3498db; color: white;' : 'background: #ecf0f1; color: #7f8c8d;'}" do %>
-     Recently Updated
-  <% end %>
-</div>
-
-<!-- Results Count and Pagination Info -->
-<div style="text-align: center; margin-bottom: 1rem; color: #7f8c8d;">
-  <% if @products.any? %>
-    Showing <strong><%= @products.offset_value + 1 %></strong>
-    to <strong><%= [@products.offset_value + @products.limit_value, @products.total_count].min %></strong>
-    of <strong><%= @products.total_count %></strong> products
-  <% else %>
-    No products found
-  <% end %>
-</div>
-
-<!-- Product Grid -->
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
-  <% @products.each do |product| %>
-    <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; position: relative;"
-         onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.15)'"
-         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(0,0,0,0.1)'">
-
-      <%= link_to product_path(product), style: "text-decoration: none; color: inherit; display: block;" do %>
-        <div style="height: 250px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-          <% if product.images.attached? && product.images.first.present? %>
-            <%= image_tag product.images.first,
-                          style: "width: 100%; height: 100%; object-fit: cover;",
-                          alt: product.name %>
-          <% else %>
-            <div style="color: #999; text-align: center; padding: 2rem;">
-              <div style="font-size: 3rem;">📦</div>
-              <div>No image</div>
-            </div>
-          <% end %>
-        </div>
-
-        <div style="padding: 1.5rem;">
-          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
-            <% if product.on_sale %>
-              <span style="background: #e74c3c; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold;">
-                ON SALE
-              </span>
-            <% end %>
-            <% if product.new_arrival || product.created_at > 3.days.ago %>
-              <span style="background: #27ae60; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold;">
-                NEW
-              </span>
-            <% end %>
-            <% if product.stock_quantity <= 5 && product.stock_quantity > 0 %>
-              <span style="background: #f39c12; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold;">
-                LOW STOCK
-              </span>
-            <% elsif product.stock_quantity == 0 %>
-              <span style="background: #95a5a6; color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.75rem; font-weight: bold;">
-                OUT OF STOCK
-              </span>
-            <% end %>
-          </div>
-
-          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #2c3e50; min-height: 2.5rem;">
-            <%= product.name %>
-          </h3>
-
-          <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-            <%= truncate(product.description, length: 80) %>
-          </p>
-
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-              <div style="font-size: 1.5rem; font-weight: bold; color: #1e3c72;">
-                ₦<%= number_with_delimiter(product.price.to_i) %>
-              </div>
-              <div style="font-size: 0.8rem; color: #95a5a6;">
-                Stock: <%= product.stock_quantity %>
-              </div>
-            </div>
-
-            <div style="background: #1e3c72; color: white; padding: 0.75rem 1.5rem; border-radius: 5px; font-weight: bold;">
-              View Details
-            </div>
-          </div>
-
-          <% if product.categories.any? %>
-            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ecf0f1;">
-              <div style="font-size: 0.8rem; color: #7f8c8d;">
-                Categories: <%= product.categories.map(&:name).join(", ") %>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
-</div>
-
-<!-- Empty State -->
-<% if @products.empty? %>
-  <div style="text-align: center; padding: 4rem 2rem; background: white; border-radius: 10px; margin-top: 2rem;">
-    <div style="font-size: 4rem; margin-bottom: 1rem;">🔍</div>
-    <h2 style="color: #7f8c8d; margin-bottom: 1rem;">No products found</h2>
-    <p style="color: #95a5a6; margin-bottom: 1.5rem;">
-      <% if params[:search].present? %>
-        No products match your search "<%= params[:search] %>".
-      <% elsif params[:filter].present? %>
-        No products match this filter.
-      <% elsif params[:category_id].present? %>
-        No products in this category yet.
+  <!-- Page Header -->
+  <div class="text-center mb-4">
+    <h1 class="display-5 fw-bold text-dark mb-2">
+      <% if params[:category_id].present? && @category %>
+        <%= @category.name %>
+      <% elsif params[:filter] == 'on_sale' %>
+        Products On Sale
+      <% elsif params[:filter] == 'new' %>
+        New Arrivals
+      <% elsif params[:filter] == 'recently_updated' %>
+        Recently Updated Products
+      <% elsif params[:search].present? %>
+        Search Results
       <% else %>
-        Check back soon for our product listings.
+        Our Products
+      <% end %>
+    </h1>
+    <p class="text-muted">
+      <% if params[:search].present? %>
+        Showing results for "<%= params[:search] %>"
+      <% else %>
+        Quality Nigerian building materials
       <% end %>
     </p>
-    <%= link_to "View all products", products_path, style: "background: #1e3c72; color: white; padding: 1rem 2rem; border-radius: 5px; text-decoration: none; font-weight: bold; display: inline-block;" %>
   </div>
-<% end %>
 
-<!-- Pagination  -->
-<% if @products.total_pages > 1 %>
-  <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 3rem; flex-wrap: wrap;">
+  <!-- Search Bar -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <%= form_with url: category_products_path, method: :get, local: true, class: "row g-3" do %>
+        <div class="col-md-5">
+          <label class="form-label fw-semibold">🔍 Search Products</label>
+          <%= text_field_tag :search, params[:search],
+              placeholder: "Search by name or description...",
+              class: "form-control" %>
+        </div>
 
-    <% if @products.prev_page %>
-      <%= link_to "← Previous",
-          url_for(params.permit!.merge(page: @products.prev_page)),
-          style: "padding: 0.75rem 1.5rem; background: #1e3c72; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;" %>
-    <% else %>
-      <span style="padding: 0.75rem 1.5rem; background: #ecf0f1; color: #95a5a6; border-radius: 5px; font-weight: bold;">
-        ← Previous
-      </span>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">📂 Filter by Category</label>
+          <%= select_tag :category_id,
+              options_for_select([['All Categories', '']] + @categories.map { |c| [c.name, c.id] }, params[:category_id]),
+              class: "form-select" %>
+        </div>
+
+        <%= hidden_field_tag :filter, params[:filter] %>
+
+        <div class="col-md-3 d-flex align-items-end gap-2">
+          <%= submit_tag "Search", class: "btn btn-primary" %>
+          <% if params[:search].present? || params[:category_id].present? %>
+            <%= link_to "Clear", products_path, class: "btn btn-secondary" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Filter Buttons -->
+  <div class="d-flex flex-wrap gap-2 mb-4 justify-content-center">
+    <%= link_to products_path(search: params[:search], category_id: params[:category_id]),
+        class: "category-pill #{params[:filter].blank? ? 'active' : ''}" do %>
+      📦 All Products
     <% end %>
 
-    <div style="display: flex; gap: 0.25rem; flex-wrap: wrap;">
-      <% (1..@products.total_pages).each do |page_num| %>
-        <% if page_num == @products.current_page %>
-          <span style="padding: 0.75rem 1rem; background: #1e3c72; color: white; border-radius: 5px; font-weight: bold;">
-            <%= page_num %>
-          </span>
-        <% elsif (page_num - @products.current_page).abs <= 2 || page_num == 1 || page_num == @products.total_pages %>
-          <%= link_to page_num,
-              url_for(params.permit!.merge(page: page_num)),
-              style: "padding: 0.75rem 1rem; background: white; color: #1e3c72; text-decoration: none; border: 2px solid #1e3c72; border-radius: 5px; font-weight: bold;" %>
-        <% elsif (page_num - @products.current_page).abs == 3 %>
-          <span style="padding: 0.75rem 1rem; color: #95a5a6;">...</span>
-        <% end %>
+    <%= link_to products_path(filter: 'on_sale', search: params[:search], category_id: params[:category_id]),
+        class: "category-pill #{params[:filter] == 'on_sale' ? 'active' : ''}" do %>
+      🔥 On Sale
+    <% end %>
+
+    <%= link_to products_path(filter: 'new', search: params[:search], category_id: params[:category_id]),
+        class: "category-pill #{params[:filter] == 'new' ? 'active' : ''}" do %>
+      ✨ New Arrivals
+    <% end %>
+
+    <%= link_to products_path(filter: 'recently_updated', search: params[:search], category_id: params[:category_id]),
+        class: "category-pill #{params[:filter] == 'recently_updated' ? 'active' : ''}" do %>
+      🔄 Recently Updated
+    <% end %>
+  </div>
+
+  <!-- Results Count -->
+  <% if @products.any? %>
+    <div class="text-center text-muted mb-3">
+      Showing <strong><%= @products.offset_value + 1 %></strong>
+      to <strong><%= [@products.offset_value + @products.limit_value, @products.total_count].min %></strong>
+      of <strong><%= @products.total_count %></strong> products
+    </div>
+  <% end %>
+
+  <!-- Product Grid -->
+  <% if @products.any? %>
+    <div class="row g-4 mb-4">
+      <% @products.each do |product| %>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+          <%= link_to product_path(product), class: "text-decoration-none product-card" do %>
+            <div class="card h-100">
+              <!-- Image -->
+              <div class="position-relative" style="height: 250px; overflow: hidden;">
+                <% if product.images.attached? && product.images.first.present? %>
+                  <%= image_tag product.images.first,
+                                class: "card-img-top product-image",
+                                alt: product.name,
+                                style: "height: 100%; width: 100%; object-fit: cover;" %>
+                <% else %>
+                  <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+                    <span style="font-size: 4rem;">📦</span>
+                  </div>
+                <% end %>
+
+                <!-- Badges -->
+                <div class="position-absolute top-0 start-0 m-2">
+                  <% if product.on_sale %>
+                    <span class="badge badge-sale mb-1 d-block">SALE</span>
+                  <% end %>
+                  <% if product.new_arrival || product.created_at > 3.days.ago %>
+                    <span class="badge badge-new mb-1 d-block">NEW</span>
+                  <% end %>
+                  <% if product.stock_quantity <= 5 && product.stock_quantity > 0 %>
+                    <span class="badge badge-low mb-1 d-block">LOW STOCK</span>
+                  <% elsif product.stock_quantity == 0 %>
+                    <span class="badge bg-secondary mb-1 d-block">OUT OF STOCK</span>
+                  <% end %>
+                </div>
+              </div>
+
+              <!-- Card Body -->
+              <div class="card-body">
+                <h5 class="card-title line-clamp-2 mb-2" style="min-height: 3rem;">
+                  <%= product.name %>
+                </h5>
+
+                <p class="card-text text-muted small line-clamp-2 mb-3">
+                  <%= truncate(product.description, length: 80) %>
+                </p>
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                    <div class="price-display">
+                      ₦<%= number_with_delimiter(product.price.to_i) %>
+                    </div>
+                    <div class="small text-muted">
+                      Stock: <%= product.stock_quantity %>
+                    </div>
+                  </div>
+
+                  <span class="btn btn-primary btn-sm">View</span>
+                </div>
+
+                <% if product.categories.any? %>
+                  <div class="border-top pt-2 mt-2">
+                    <div class="small text-muted">
+                      <%= product.categories.map(&:name).join(", ") %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
       <% end %>
     </div>
 
-    <% if @products.next_page %>
-      <%= link_to "Next →",
-          url_for(params.permit!.merge(page: @products.next_page)),
-          style: "padding: 0.75rem 1.5rem; background: #1e3c72; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;" %>
-    <% else %>
-      <span style="padding: 0.75rem 1.5rem; background: #ecf0f1; color: #95a5a6; border-radius: 5px; font-weight: bold;">
-        Next →
-      </span>
-    <% end %>
-  </div>
+    <!-- Pagination -->
+    <% if @products.total_pages > 1 %>
+      <nav aria-label="Product pagination">
+        <ul class="pagination justify-content-center">
 
-  <div style="text-align: center; margin-top: 1rem; color: #7f8c8d; font-size: 0.9rem;">
-    Page <%= @products.current_page %> of <%= @products.total_pages %>
-  </div>
-<% end %>
+          <li class="page-item <%= 'disabled' unless @products.prev_page %>">
+            <% if @products.prev_page %>
+              <%= link_to "← Previous", url_for(params.permit!.merge(page: @products.prev_page)), class: "page-link" %>
+            <% else %>
+              <span class="page-link">← Previous</span>
+            <% end %>
+          </li>
+
+          <% (1..@products.total_pages).each do |page_num| %>
+            <% if page_num == @products.current_page %>
+              <li class="page-item active"><span class="page-link"><%= page_num %></span></li>
+            <% elsif (page_num - @products.current_page).abs <= 2 || page_num == 1 || page_num == @products.total_pages %>
+              <li class="page-item">
+                <%= link_to page_num, url_for(params.permit!.merge(page: page_num)), class: "page-link" %>
+              </li>
+            <% elsif (page_num - @products.current_page).abs == 3 %>
+              <li class="page-item disabled"><span class="page-link">...</span></li>
+            <% end %>
+          <% end %>
+
+          <li class="page-item <%= 'disabled' unless @products.next_page %>">
+            <% if @products.next_page %>
+              <%= link_to "Next →", url_for(params.permit!.merge(page: @products.next_page)), class: "page-link" %>
+            <% else %>
+              <span class="page-link">Next →</span>
+            <% end %>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="text-center text-muted small">
+        Page <%= @products.current_page %> of <%= @products.total_pages %>
+      </div>
+    <% end %>
+
+  <% else %>
+    <!-- Empty State -->
+    <div class="text-center py-5">
+      <div style="font-size: 5rem;">🔍</div>
+      <h2 class="h3 text-muted mb-3">No products found</h2>
+      <p class="text-muted mb-4">
+        <% if params[:search].present? %>
+          No products match your search "<%= params[:search] %>".
+        <% elsif params[:filter].present? %>
+          No products match this filter.
+        <% else %>
+          Check back soon for our product listings.
+        <% end %>
+      </p>
+      <%= link_to "View all products", products_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

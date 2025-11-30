@@ -1,0 +1,209 @@
+// Import Google Fonts
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+// Custom Variables (override Bootstrap)
+$primary: #d97706;
+$secondary: #047857;
+$success: #10b981;
+$danger: #dc2626;
+$warning: #f59e0b;
+$info: #3b82f6;
+
+$font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  sans-serif;
+$body-bg: #f9fafb;
+$body-color: #1f2937;
+
+// Custom Styles
+body {
+  font-family: $font-family-base;
+  background-color: $body-bg;
+  color: $body-color;
+}
+
+// Product Cards
+.product-card {
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+
+    .product-image {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.product-image {
+  transition: transform 0.5s ease;
+  object-fit: cover;
+  height: 250px;
+  width: 100%;
+}
+
+// Badges
+.badge-sale {
+  background-color: $danger;
+}
+
+.badge-new {
+  background-color: $success;
+}
+
+.badge-low {
+  background-color: $warning;
+}
+
+// Header
+.site-header {
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+// Footer
+.site-footer {
+  background: #1f2937;
+  color: #9ca3af;
+
+  a {
+    color: #d1d5db;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+}
+
+// Company Logo
+.company-logo {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, $primary, darken($primary, 15%));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: white;
+  border-radius: 0.5rem;
+  transition: box-shadow 0.3s;
+
+  &:hover {
+    box-shadow: 0 0 20px rgba($primary, 0.4);
+  }
+}
+
+// Category Pills
+.category-pill {
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-weight: 500;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-block;
+  white-space: nowrap;
+
+  &.active {
+    background-color: $primary;
+    color: white;
+  }
+
+  &:not(.active) {
+    background-color: #f3f4f6;
+    color: #4b5563;
+
+    &:hover {
+      background-color: #e5e7eb;
+      text-decoration: none;
+    }
+  }
+}
+
+// Price Display
+.price-display {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $primary;
+}
+
+// Stock Status
+.stock-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+
+  &.in-stock {
+    color: $success;
+  }
+
+  &.low-stock {
+    color: $warning;
+  }
+
+  &.out-of-stock {
+    color: $danger;
+  }
+}
+
+// Motto Text
+.motto-text {
+  color: $primary;
+  font-weight: 600;
+  font-style: italic;
+}
+
+// Line Clamp
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Smooth Scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Custom Button Styles
+.btn-primary {
+  background-color: $primary;
+  border-color: $primary;
+
+  &:hover {
+    background-color: darken($primary, 10%);
+    border-color: darken($primary, 10%);
+  }
+}
+
+.btn-secondary {
+  background-color: $secondary;
+  border-color: $secondary;
+
+  &:hover {
+    background-color: darken($secondary, 10%);
+    border-color: darken($secondary, 10%);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .product-image {
+    height: 200px;
+  }
+
+  .price-display {
+    font-size: 1.5rem;
+  }
+}
