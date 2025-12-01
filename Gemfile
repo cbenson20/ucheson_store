@@ -53,7 +53,7 @@ gem 'inherited_resources'
 gem 'bootstrap', '~> 5.3'
 gem 'jquery-rails'
 # Modern CSS framework (Rubric 4.1.2)
-gem 'tailwindcss-rails', '~> 3.0'
+gem 'tailwindcss-rails', '~> 4.4'
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
